@@ -2,13 +2,10 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./routers/protectRoute";
 import Login from "./pages/auth/login";
-import Article from "./pages/article/article.jsx";
-import CreateArticle from "./pages/article/createArticle";
-import DetailArticle from "./pages/article/detailArticle";
-import UpdateArticle from "./pages/article/updateArticle";
 import { useSelector } from "react-redux";
 import Register from "./pages/auth/register";
 import Home from "./pages/Home";
+import { Outlet, Paket } from "./pages/admin";
 // import Input from "./component/Input";
 // import TextArea from "./component/TextArea";
 // import Button from "./component/Button";
@@ -19,43 +16,14 @@ export default function App() {
   console.log(color);
 
   return (
-    <div >
+    <div>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Home />} />
-        <Route
-          path="/article"
-          element={
-            <ProtectedRoute>
-              <Article />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/article/createArticle"
-          element={
-            <ProtectedRoute>
-              <CreateArticle />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/artikel/:slug"
-          element={
-            <ProtectedRoute>
-              <DetailArticle />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/artikel/update/:slug"
-          element={
-            <ProtectedRoute>
-              <UpdateArticle />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/home" element={<Home />}>
+          <Route path="outlet" element={<Outlet />} />
+          <Route path="paket" element={<Paket />} />
+        </Route>
 
         <Route path="*" element={<Navigate to="/article" replace={true} />} />
       </Routes>

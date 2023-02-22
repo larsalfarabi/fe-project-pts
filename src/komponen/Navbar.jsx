@@ -18,7 +18,7 @@ const Navbar = ({ categories }) => {
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                              <img src={ Search} alt="" className="w-[17px]"/>
+                <img src={Search} alt="" className="w-[17px]" />
               </div>
               <input
                 type="text"

@@ -1,9 +1,23 @@
-import { MdDashboard } from "react-icons/md";
-import { BsShopWindow, BsBoxSeam } from "react-icons/bs";
-import { FaRegUser } from "react-icons/fa";
+import "boxicons";
 export const categories = [
-  { name: "Dashboard", icon: <MdDashboard /> },
-  { name: "Outlet", icon: <BsShopWindow /> },
-  { name: "Member", icon: <FaRegUser /> },
-  { name: "Paket", icon: <BsBoxSeam /> },
+  {
+    name: "Dashboard",
+    icon: <box-icon type="solid" name="grid-alt"></box-icon>,
+    element: "outlet",
+  },
+  {
+    name: "Outlet",
+    icon: <box-icon type="solid" name="store"></box-icon>,
+    element: "outlet",
+  },
+  {
+    name: "Member",
+    icon: <box-icon type="solid" name="user"></box-icon>,
+    element: "paket",
+  },
+  {
+    name: "Paket",
+    icon: <box-icon type="solid" name="package"></box-icon>,
+    element: "paket",
+  },
 ];

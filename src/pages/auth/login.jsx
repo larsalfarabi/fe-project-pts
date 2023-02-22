@@ -2,13 +2,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../komponen/button";
 import Input from "../../komponen/input";
-import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { authLogin } from "../redux/action/authAction";
 import { useDispatch } from "react-redux";
 import PasswordInput from "../../komponen/InputPassword";
-import Sosmed from "../../komponen/Sosmed";
-import Select from "../../komponen/select";
 
 const Login = () => {
   let dispatch = useDispatch();
@@ -20,16 +18,14 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "",
+      username: "",
       password: "",
-      role: "",
     },
     validationSchema: Yup.object().shape({
-      email: Yup.string().email("Invalid email").required("Email is required"),
+      username: Yup.string().required("Username  is required"),
       password: Yup.string()
         .min(8, "Password must be at least 8 characters")
         .required("Password is required"),
-      role: Yup.string().required("Role is required"),
     }),
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
@@ -87,14 +83,14 @@ const Login = () => {
         </div>
         <form action="" onSubmit={formik.handleSubmit}>
           <Input
-            value={formik.values.email}
-            placeholder={"Enter Email"}
+            value={formik.values.username}
+            placeholder={"Enter Username"}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            type="email"
-            name={"email"}
-            isError={formik.touched.email && formik.errors.email}
-            textError={formik.errors.email}
+            type="text"
+            name={"username"}
+            isError={formik.touched.username && formik.errors.username}
+            textError={formik.errors.username}
           />
           <PasswordInput
             value={formik.values.password}
@@ -106,7 +102,7 @@ const Login = () => {
             isError={formik.touched.password && formik.errors.password}
             textError={formik.errors.password}
           />
-          <Select
+          {/* <Select
             name="role"
             value={formik.values.role}
             onChange={formik.handleChange}
@@ -117,8 +113,8 @@ const Login = () => {
             <option value="admin" >Admin</option>
             <option value="kasir">Kasir</option>
             <option value="owner">Owner</option>
-          </Select>
-          <div className="grid grid-cols-1 gap-5 mt-5">
+          </Select> */}
+          <div className="grid grid-cols-1 gap-5 mt-8">
             <Button title={isLoading ? "Proses" : "Sign in"} />
           </div>
         </form>

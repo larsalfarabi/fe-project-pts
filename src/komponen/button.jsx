@@ -35,8 +35,8 @@ export default function Button({ title, color, disabled, ...props }) {
         style={{
           color: color,
           opacity: disabled ? 0.5 : 1,
-        }}
-        className="button2"
+        }} 
+        className="w-full py-3 bg-[#FDC886] rounded-md text-sm font-semibold"
         {...props}
       >
         {title}

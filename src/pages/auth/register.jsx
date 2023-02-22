@@ -3,112 +3,118 @@ import Button from "../../komponen/button";
 import Input from "../../komponen/input";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { authRegister } from "../redux/action/authAction";
+import * as Yup from "yup";
 import "../../../src/styles/styles.css";
+import { useFormik } from "formik";
+import Select from "../../komponen/select";
+import InputPassword from "../../komponen/InputPassword";
 
 const Register = () => {
   const navigate = useNavigate();
   let dispatch = useDispatch();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [messageError, setMessageError] = React.useState("");
-  const [errorName, setErrorName] = React.useState("");
-  const [errorEmail, setErrorEmail] = React.useState("");
-  const [errorPassword, setErrorPassword] = React.useState("");
-  const [errorConfirmPassword, setErrorConfirmPassword] = React.useState("");
-  const [payload, setPayload] = React.useState({
-    name: "",
-    email: "",
-    password: "",
-    password_confirmation: "",
+  // const [messageError, setMessageError] = React.useState("");
+  // const [errorName, setErrorName] = React.useState("");
+  // const [errorEmail, setErrorEmail] = React.useState("");
+  // const [errorPassword, setErrorPassword] = React.useState("");
+  // const [errorConfirmPassword, setErrorConfirmPassword] = React.useState("");
+  // const [payload, setPayload] = React.useState({
+  //   name: "",
+  //   email: "",
+  //   password: "",
+  //   password_confirmation: "",
+  // });
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      role: "",
+    },
+    validationSchema: Yup.object().shape({
+      email: Yup.string().email("Invalid email").required("Email is required"),
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .required("Password is required"),
+      role: Yup.string().required("Role is required"),
+    }),
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+      formik.resetForm();
+      return navigate("/outlet/createOutlet", { replace: true });
+    },
   });
 
-  const handleChange = (e) => {
-    setPayload((payload) => {
-      return {
-        ...payload,
-        [e.target.name]: e.target.value,
-      };
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setIsLoading(true);
-      const response = await dispatch(authRegister(payload));
-      console.log("response", response);
-      if (response?.status === "Success") {
-        return navigate("/article", { replace: true });
-      } else {
-        setErrorName(response?.response?.data?.errors?.name);
-        setErrorEmail(response?.response?.data?.errors?.email);
-        setErrorPassword(response?.response?.data?.errors?.password);
-        setErrorConfirmPassword(
-          response?.response?.data?.errors?.password_confirmation
-        );
-        setMessageError(response?.response?.message);
-      }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <div>
-      <div className="mt-5 flex flex-col justify-center items-center ">
-        <h1>Register page</h1>
-        <div className="text-red-300 bg-red-500 p-1 rounded-md flex flex-col">
-          <p>{messageError}</p>
-          <p>{errorName}</p>
-          <p>{errorEmail}</p>
-          <p>{errorPassword}</p>
-          <p>{errorConfirmPassword}</p>
+    <div className="flex justify-center items-center h-screen">
+      <div className="bg-white w-[26rem] px-[2rem] py-[2.1rem] rounded-[1.5rem]">
+        <div className="text-center px-9">
+          {" "}
+          <h1 className="font-semibold text-2xl">Sign Up</h1>
+          <p className="my-4 text-[15px] font-medium">
+            Hey, Enter your details to get sing In to your account
+          </p>
         </div>
-        <div className="bg-gray-300  relative  before:absolute before:z-[-1] before:top-2 before:left-2 before:w-full before:h-full before:bg-gray-400 before:rounded-md w-[25rem] px-5 py-5 rounded-lg mt-5 ">
-          <form onSubmit={handleSubmit}>
-            <Input
-              value={payload.name}
-              placeholder={"name"}
-              onChange={handleChange}
-              type="text"
-              name={"name"}
-            />
-            <Input
-              value={payload.email}
-              placeholder={"Email"}
-              onChange={handleChange}
-              type="email"
-              name={"email"}
-            />
-            <Input
-              value={payload.password}
-              placeholder={"Password"}
-              name={"password"}
-              type="password"
-              onChange={handleChange}
-            />
-            <Input
-              value={payload.password_confirmation}
-              placeholder={"Confirm Password"}
-              name={"password_confirmation"}
-              type="password"
-              onChange={handleChange}
-            />
-            <div className="grid grid-cols-2 gap-5 mt-2">
-              <Button
-                title={"login"}
-                onClick={() => {
-                  return navigate("/login", { replace: true });
-                }}
-              />
-              <Button
-                title={isLoading ? <div class="line-wobble"></div> : "register"}
-              />
-            </div>
-          </form>
-        </div>
+        <form action="" onSubmit={formik.handleSubmit}>
+          <Input
+            value={formik.values.email}
+            placeholder={"Enter Email"}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            type="email"
+            name={"email"}
+            isError={formik.touched.email && formik.errors.email}
+            textError={formik.errors.email}
+          />
+          <InputPassword
+            value={formik.values.password}
+            placeholder={"Passcode"}
+            name={"password"}
+            type="password"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            isError={formik.touched.password && formik.errors.password}
+            textError={formik.errors.password}
+          />
+          <Select
+            name="role"
+            value={formik.values.role}
+            onChange={formik.handleChange}
+            isError={formik.errors.role && formik.touched.role}
+            textError={formik.errors.role}
+          >
+            <option value="" className="text-gray-400">
+              Select an option
+            </option>
+            <option value="admin" className="text-black">
+              Admin
+            </option>
+            <option value="kasir">Kasir</option>
+            <option value="owner">Owner</option>
+          </Select>
+          <div className="grid grid-cols-1 gap-5 mt-5">
+            <Button title={isLoading ? "Proses" : "Sign up"} />
+          </div>
+        </form>
+        {/* <p className="text-sm text-center font-medium my-5">
+          - or sign in with -
+        </p>
+        <div className="grid grid-cols-3 gap-1 my-5">
+          <Sosmed title={"Google"} />
+          <Sosmed title={"Apple ID"} />
+          <Sosmed title={"Facebook"} />
+        </div> */}
+        <p className="text-[13px] text-center mt-5">
+          Don't have an account?{" "}
+          <span
+            className="font-semibold text-[13px] cursor-pointer"
+            onClick={() => {
+              return navigate("/register", { replace: true });
+            }}
+          >
+            Request Now
+          </span>
+        </p>
       </div>
     </div>
   );

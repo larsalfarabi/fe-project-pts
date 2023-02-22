@@ -8,6 +8,7 @@ import DetailArticle from "./pages/article/detailArticle";
 import UpdateArticle from "./pages/article/updateArticle";
 import { useSelector } from "react-redux";
 import Register from "./pages/auth/register";
+import Home from "./pages/Home";
 // import Input from "./component/Input";
 // import TextArea from "./component/TextArea";
 // import Button from "./component/Button";
@@ -18,18 +19,11 @@ export default function App() {
   console.log(color);
 
   return (
-    <div className="">
-      <h1
-        style={{
-          backgroundColor: color.color,
-        }}
-      >
-        {" "}
-        branch API
-      </h1>
+    <div >
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home />} />
         <Route
           path="/article"
           element={

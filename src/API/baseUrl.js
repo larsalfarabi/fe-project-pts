@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "https://belajar-react.smkmadinatulquran.sch.id/api",
+  baseURL: "http://localhost:2006",
 });
 
 export default client;

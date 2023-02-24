@@ -1,20 +1,21 @@
+import { useFormik } from "formik";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Input from "../../komponen/input";
 import Modal from "../../komponen/Modal";
-import Select from "../../komponen/select";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
 import ModalDelete from "../../komponen/ModalDelete";
-
-const Paket = () => {
+import Select from "../../komponen/select";
+import * as Yup from "yup";
+import PasswordInput from "../../komponen/InputPassword";
+const Member = () => {
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
+      nama: "",
+      username: "",
+      password: "",
       nama_outlet: "",
-      jenis: "",
-      nama_paket: "",
-      harga: "",
+      role: "",
     },
     validationSchema: Yup.object().shape({
       username: Yup.string().required("Username  is required"),
@@ -31,8 +32,35 @@ const Paket = () => {
   return (
     <div className="border border-gray-100 h-full rounded-lg px-4 py-3">
       <div className="flex justify-between mb-3">
-        <p>Paket Data</p>
+        <p>Member Data</p>
         <Modal title={"Create Paket"} color={"#B8C0B8"}>
+          {" "}
+          <Input
+            placeholder="Nama Pengguna"
+            name={"nama"}
+            type="text"
+            values={formik.values.nama}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />{" "}
+          <Input
+            placeholder="Username"
+            name={"username"}
+            type="text"
+            values={formik.values.username}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />{" "}
+          <PasswordInput
+            value={formik.values.password}
+            placeholder={"Passcode"}
+            name={"password"}
+            type="password"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            isError={formik.touched.password && formik.errors.password}
+            textError={formik.errors.password}
+          />
           <Select
             name="nama_outlet"
             value={formik.values.nama_outlet}
@@ -43,42 +71,24 @@ const Paket = () => {
             <option value="" className="text-gray-400">
               Pilih Nama Outlet
             </option>
-            <option value="admin">Admin</option>
-            <option value="kasir">Kasir</option>
-            <option value="owner">Owner</option>
-            <option value="owner">Owner</option>
+            <option value="admin">Option 1</option>
+            <option value="kasir">Option 2</option>
+            <option value="owner">Option 3</option>
           </Select>
           <Select
-            name="jenis"
-            value={formik.values.jenis}
+            name="role"
+            value={formik.values.role}
             onChange={formik.handleChange}
-            isError={formik.errors.jenis && formik.touched.jenis}
-            textError={formik.errors.jenis}
+            isError={formik.errors.role && formik.touched.role}
+            textError={formik.errors.role}
           >
             <option value="" className="text-gray-400">
               Pilih Jenis
             </option>
-            <option value="kiloan">Kiloan</option>
-            <option value="selimut">Selimut</option>
-            <option value="bed_cover">Bed Cover</option>
-            <option value="kaos">Kaos</option>
-            <option value="lainn">Lain</option>
+            <option value="admin">Admin</option>
+            <option value="kasir">Kasir</option>
+            <option value="owner">Owner</option>
           </Select>
-          <Input
-            placeholder="Nama Paket"
-            name={"nama_paket"}
-            values={formik.values.nama_paket}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          <Input
-            placeholder="Harga"
-            name={"harga"}
-            type="number"
-            values={formik.values.harga}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
         </Modal>
       </div>
       <div className="px-3">
@@ -89,17 +99,17 @@ const Paket = () => {
               <th className="font-medium text-start border-b border-dashed border-gray-200 w-[50px]">
                 No
               </th>
-              <th className="font-medium text-start border-b border-dashed border-gray-200 w-[350px] ">
+              <th className="font-medium text-start border-b border-dashed border-gray-200 w-[250px] ">
+                Nama
+              </th>
+              <th className="font-medium text-start border-b border-dashed border-gray-200 w-[250px]">
+                Username
+              </th>
+              <th className="font-medium text-start border-b border-dashed border-gray-200 w-[250px]">
                 Nama Outlet
               </th>
               <th className="font-medium text-start border-b border-dashed border-gray-200 w-[200px]">
-                Jenis
-              </th>
-              <th className="font-medium text-start border-b border-dashed border-gray-200 w-[250px]">
-                Nama Paket
-              </th>
-              <th className="font-medium text-start border-b border-dashed border-gray-200 w-[200px]">
-                Harga
+                Akses
               </th>
               <th className="font-medium text-start border-b border-dashed border-gray-200 w-[200px]">
                 Aksi
@@ -126,6 +136,32 @@ const Paket = () => {
               </td>
               <td className="grid grid-cols-2 w-[200px] gap-2 border-b border-dashed border-gray-300">
                 <Modal title={"Edit"} color={"#E0D5C4"} margin={"12px 0"}>
+                  <Input
+                    placeholder="Nama Pengguna"
+                    name={"nama"}
+                    type="text"
+                    values={formik.values.nama}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />{" "}
+                  <Input
+                    placeholder="Username"
+                    name={"username"}
+                    type="text"
+                    values={formik.values.username}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />{" "}
+                  <PasswordInput
+                    value={formik.values.password}
+                    placeholder={"Passcode"}
+                    name={"password"}
+                    type="password"
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    isError={formik.touched.password && formik.errors.password}
+                    textError={formik.errors.password}
+                  />
                   <Select
                     name="nama_outlet"
                     value={formik.values.nama_outlet}
@@ -138,44 +174,31 @@ const Paket = () => {
                     <option value="" className="text-gray-400">
                       Pilih Nama Outlet
                     </option>
-                    <option value="admin">Admin</option>
-                    <option value="kasir">Kasir</option>
-                    <option value="owner">Owner</option>
-                    <option value="owner">Owner</option>
+                    <option value="admin">Option 1</option>
+                    <option value="kasir">Option 2</option>
+                    <option value="owner">Option 3</option>
                   </Select>
                   <Select
-                    name="jenis"
-                    value={formik.values.jenis}
+                    name="role"
+                    value={formik.values.role}
                     onChange={formik.handleChange}
-                    isError={formik.errors.jenis && formik.touched.jenis}
-                    textError={formik.errors.jenis}
+                    isError={formik.errors.role && formik.touched.role}
+                    textError={formik.errors.role}
                   >
                     <option value="" className="text-gray-400">
                       Pilih Jenis
                     </option>
-                    <option value="kiloan">Kiloan</option>
-                    <option value="selimut">Selimut</option>
-                    <option value="bed_cover">Bed Cover</option>
-                    <option value="kaos">Kaos</option>
-                    <option value="lainn">Lain</option>
+                    <option value="admin">Admin</option>
+                    <option value="kasir">Kasir</option>
+                    <option value="owner">Owner</option>
                   </Select>
-                  <Input
-                    placeholder="Nama Paket"
-                    name={"nama_paket"}
-                    values={formik.values.nama_paket}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                  <Input
-                    placeholder="Harga"
-                    name={"harga"}
-                    type="number"
-                    values={formik.values.harga}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
                 </Modal>
-                <ModalDelete color={"black"} margin={"12px 0"} title={'Delete'} subTitle={'Paket'} />
+                <ModalDelete
+                  color={"black"}
+                  margin={"12px 0"}
+                  title={"Delete"}
+                    subTitle={'Pengguna'}
+                />
               </td>
             </tr>
           </tbody>
@@ -185,4 +208,4 @@ const Paket = () => {
   );
 };
 
-export default Paket;
+export default Member;

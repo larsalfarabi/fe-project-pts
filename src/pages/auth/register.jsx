@@ -8,6 +8,7 @@ import "../../../src/styles/styles.css";
 import { useFormik } from "formik";
 import Select from "../../komponen/select";
 import InputPassword from "../../komponen/InputPassword";
+import { registerProses } from "../../API/auth";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -24,12 +25,27 @@ const Register = () => {
   //   password: "",
   //   password_confirmation: "",
   // });
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await registerProses(formik.values);
+      if (response?.status === "berhasil") {
+        return alert("berhasil login");
+      } else {
+        alert("gagal login");
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
-      role: "",
+      nama: "kasir",
+      username: "kasir",
+      password: "kasir123",
+      id_outlet: "1",
+      role: "kasir",
     },
     validationSchema: Yup.object().shape({
       email: Yup.string().email("Invalid email").required("Email is required"),
@@ -39,9 +55,7 @@ const Register = () => {
       role: Yup.string().required("Role is required"),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-      formik.resetForm();
-      return navigate("/outlet/createOutlet", { replace: true });
+      handleSubmit(values);
     },
   });
 
@@ -57,14 +71,13 @@ const Register = () => {
         </div>
         <form action="" onSubmit={formik.handleSubmit}>
           <Input
-            value={formik.values.email}
+            value={formik.values.nama}
             placeholder={"Enter Email"}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            type="email"
             name={"email"}
-            isError={formik.touched.email && formik.errors.email}
-            textError={formik.errors.email}
+            isError={formik.touched.nama && formik.errors.nama}
+            textError={formik.errors.nama}
           />
           <InputPassword
             value={formik.values.password}
@@ -93,7 +106,10 @@ const Register = () => {
             <option value="owner">Owner</option>
           </Select>
           <div className="grid grid-cols-1 gap-5 mt-5">
-            <Button title={isLoading ? "Proses" : "Sign up"} />
+            <Button
+              title={isLoading ? "Proses" : "Sign up"}
+              onSubmit={handleSubmit}
+            />
           </div>
         </form>
         {/* <p className="text-sm text-center font-medium my-5">

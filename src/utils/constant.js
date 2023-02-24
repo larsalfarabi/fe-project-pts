@@ -2,7 +2,9 @@ import "boxicons";
 export const categories = [
   {
     name: "Dashboard",
-    icon: <box-icon type="solid" name="grid-alt"></box-icon>,
+    icon: (
+      <box-icon name="grid-alt" type="solid" animation="flashing"></box-icon>
+    ),
     element: "outlet",
   },
   {

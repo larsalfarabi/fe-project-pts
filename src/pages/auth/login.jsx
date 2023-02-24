@@ -4,17 +4,32 @@ import Button from "../../komponen/button";
 import Input from "../../komponen/input";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { authLogin } from "../redux/action/authAction";
-import { useDispatch } from "react-redux";
+// import { authLogin } from "../redux/action/authAction";
+// import { useDispatch } from "react-redux";
 import PasswordInput from "../../komponen/InputPassword";
+import { loginProses } from "../../API/auth";
 
 const Login = () => {
-  let dispatch = useDispatch();
+  // let dispatch = useDispatch();
   const navigate = useNavigate();
   // const [payload, setPayload] = React.useState({
   //   email: "",
   //   password: "",
   // });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await loginProses(formik.values);
+      if (response?.status === "berhasil") {
+        return alert("berhasil login");
+      } else {
+        alert("gagal login");
+      }
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -28,9 +43,10 @@ const Login = () => {
         .required("Password is required"),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
-      formik.resetForm();
-      return navigate("/home", { replace: true });
+      // alert(JSON.stringify("berhasil register"));
+      // formik.resetForm();
+      // return navigate("/home", { replace: true });
+      handleSubmit();
     },
   });
   // const handleChange = (e) => {

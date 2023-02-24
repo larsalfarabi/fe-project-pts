@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import Register from "./pages/auth/register";
 import Home from "./pages/Home";
 import { Outlet, Paket } from "./pages/admin";
+import Member from "./pages/admin/Member";
 // import Input from "./component/Input";
 // import TextArea from "./component/TextArea";
 // import Button from "./component/Button";
@@ -23,9 +24,10 @@ export default function App() {
         <Route path="/home" element={<Home />}>
           <Route path="outlet" element={<Outlet />} />
           <Route path="paket" element={<Paket />} />
+          <Route path="member" element={<Member />} />
         </Route>
 
-        <Route path="*" element={<Navigate to="/article" replace={true} />} />
+        <Route path="*" element={<Navigate to="/login" replace={true} />} />
       </Routes>
     </div>
   );

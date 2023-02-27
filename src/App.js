@@ -7,6 +7,7 @@ import Register from "./pages/auth/register";
 import Home from "./pages/Home";
 import { Outlet, Paket } from "./pages/admin";
 import Member from "./pages/admin/Member";
+import Pelanggan from "./pages/admin/Pelanggan";
 // import Input from "./component/Input";
 // import TextArea from "./component/TextArea";
 // import Button from "./component/Button";
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="outlet" element={<Outlet />} />
           <Route path="paket" element={<Paket />} />
           <Route path="member" element={<Member />} />
+          <Route path="pelanggan" element={<Pelanggan />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace={true} />} />

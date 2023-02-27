@@ -9,7 +9,9 @@ export function authLogin(payload) {
       dispatch({
         type: "login",
         name: data?.user?.name,
-        email: data?.user?.email,
+        username: data?.user?.username,
+        id_outlet: data?.user?.id_outlet,
+        role: data?.user?.role,
         isAuth: true,
       });
       Cookies.set("myapps_token", data?.token);

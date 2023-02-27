@@ -1,35 +1,33 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../komponen/button";
-import Input from "../../komponen/input";
+import { Input } from "../../komponen/input";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 // import { authLogin } from "../redux/action/authAction";
 // import { useDispatch } from "react-redux";
 import PasswordInput from "../../komponen/InputPassword";
-import { loginProses } from "../../API/auth";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
+  const notify = () =>
+    toast.success("successful login", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
   // let dispatch = useDispatch();
   const navigate = useNavigate();
   // const [payload, setPayload] = React.useState({
   //   email: "",
   //   password: "",
   // });
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await loginProses(formik.values);
-      if (response?.status === "berhasil") {
-        return alert("berhasil login");
-      } else {
-        alert("gagal login");
-      }
-      console.log(response);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -42,11 +40,21 @@ const Login = () => {
         .min(8, "Password must be at least 8 characters")
         .required("Password is required"),
     }),
-    onSubmit: (values) => {
-      // alert(JSON.stringify("berhasil register"));
-      // formik.resetForm();
-      // return navigate("/home", { replace: true });
-      handleSubmit();
+    onSubmit: async (values) => {
+      // try {
+      //   const response = await loginProses(values);
+      //   console.log(response);
+      //   if (response?.status === "berhasil") {
+      //     return alert("berhasil login");
+      //   } else {
+      //     alert("gagal login");
+      //   }
+      //   console.log(response);
+      // } catch (error) {
+      //   console.log(error);
+      // }
+      navigate("/home");
+      return notify();
     },
   });
   // const handleChange = (e) => {

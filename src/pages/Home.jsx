@@ -4,6 +4,7 @@ import React from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import Navbar from "../komponen/Navbar";
 import { categories } from "../utils/constant";
+import { ToastContainer } from "react-toastify";
 const Home = () => {
   let location = useLocation();
 
@@ -13,30 +14,52 @@ const Home = () => {
   console.log(location.pathname);
   console.log(location.pathname.split("/"));
   const activeClassname =
-    "outline-none border-l border-black w-full flex items-center items-center px-3 py-2.5 cursor-pointer";
+    "bg-black rounded-md w-full flex items-center items-center px-4 py-3 cursor-pointer text-white";
   const nonActiveClassname =
-    "flex hover:border-l text-gray-500 hover:border-gray-300 border-l w-full border-white items-center px-3 py-2.5 cursor-pointer";
+    "flex text-black w-full items-center px-4 py-3 cursor-pointer hover:bg-gray-50 hover:rounded-md";
   console.log("item 1 =>", path);
   return (
     <div className="w-screen h-screen">
       {" "}
-      <Navbar categories={"Dashboard"} />
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      <Navbar
+        categories={
+          cekPath === "member"
+            ? "Member"
+            : null || cekPath === "paket"
+            ? "Paket"
+            : null || cekPath === "outlet"
+            ? "Outlet"
+            : null || cekPath === "pelanggan"
+            ? "Pelanggan"
+            : null
+        }
+      />
       <div className="w-full h-[88%] grid grid-cols-6">
-        <div className="border-r w-[110%] border-gray-300 px-3">
+        <div className="border-r w-[110%] border-gray-300 px-6">
           <img src="" alt="" />
           <div className="flex flex-col space-y-4">
             {" "}
-            <Link to={`/${path}/paket`}>
+            <Link to={`/${path}/pelanggan`}>
               {" "}
               <button
                 className={
-                  cekPath === "paket" ? activeClassname : nonActiveClassname
+                  cekPath === "pelanggan" ? activeClassname : nonActiveClassname
                 }
               >
                 <BsFillGridFill />
-                <h1 className="mt-[2px] ml-3 text-[15px] font-medium ">
-                  Dashboard
-                </h1>
+                <h1 className="mt-[2px] ml-3 font-medium ">Dashboard</h1>
               </button>
             </Link>
             <Link to={`/${path}/outlet`}>

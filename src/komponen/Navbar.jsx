@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+
 import React from "react";
 import Search from "../assets/Search.svg";
 const Navbar = ({ categories }) => {
@@ -7,9 +9,9 @@ const Navbar = ({ categories }) => {
         <div className="border-r w-[110%] h-full border-gray-300">
           <img src="" alt="logo" />
         </div>
-        <div className="col-span-5 flex items-center justify-between h-full pl-10 px-5">
+        <div className="col-span-5 flex items-center justify-between h-full pl-10 px-6">
           <h1 className="text-[26px] font-semibold">{categories}</h1>
-          <form>
+          {/* <form>
             <label
               for="default-search"
               class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
@@ -28,7 +30,19 @@ const Navbar = ({ categories }) => {
                 required
               />
             </div>
-          </form>
+          </form> */}
+          <div className="flex space-x-1.5">
+            {" "}
+            <img
+              src="https://avataaars.io/?avatarStyle=Circle&topType=ShortHairSides&accessoriesType=Prescription01&hairColor=Brown&facialHairType=MoustacheMagnum&facialHairColor=Brown&clotheType=BlazerSweater&eyeType=Dizzy&eyebrowType=RaisedExcitedNatural&mouthType=Serious&skinColor=Light"
+              className="w-10"
+            />
+            <div className="flex-col">
+              {" "}
+              <p className="font-medium text-sm mt-2">Admin</p>
+              <p className="text-xs text-gray-400">Admin</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

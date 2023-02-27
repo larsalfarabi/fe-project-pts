@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../../komponen/button";
-import Input from "../../komponen/input";
+import {Input} from "../../komponen/input";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as Yup from "yup";

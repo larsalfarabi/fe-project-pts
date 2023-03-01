@@ -1,11 +1,10 @@
-import { syncToken } from "./baseUrl2";
-import axios from "axios";
+import axios,{ syncToken } from "./baseUrl2";
 export async function loginProses(payload) {
-  return axios.post(`http://localhost:2006/login`, payload);
+  return axios.post(`/login`, payload);
 }
 
 export async function registerProses(payload) {
-  return axios.post("http://localhost:2006/register", payload);
+  return axios.post("/register", payload);
 }
 
 export function authMeProcess() {

@@ -4,30 +4,17 @@ import Button from "../../komponen/button";
 import { Input } from "../../komponen/input";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-// import { authLogin } from "../redux/action/authAction";
-// import { useDispatch } from "react-redux";
 import PasswordInput from "../../komponen/InputPassword";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import Swal from "sweetalert2";
+import { authLogin } from "../redux/action/authAction";
 
 const Login = () => {
-  const notify = () =>
-    toast.success("successful login", {
-      position: "top-right",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-    });
-  // let dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = React.useState(false);
   const navigate = useNavigate();
-  // const [payload, setPayload] = React.useState({
-  //   email: "",
-  //   password: "",
-  // });
 
   const formik = useFormik({
     initialValues: {
@@ -41,62 +28,65 @@ const Login = () => {
         .required("Password is required"),
     }),
     onSubmit: async (values) => {
-      // try {
-      //   const response = await loginProses(values);
-      //   console.log(response);
-      //   if (response?.status === "berhasil") {
-      //     return alert("berhasil login");
-      //   } else {
-      //     alert("gagal login");
-      //   }
-      //   console.log(response);
-      // } catch (error) {
-      //   console.log(error);
-      // }
-      navigate("/home");
-      return notify();
+      try {
+        setIsLoading(true);
+        const response = await dispatch(authLogin(values));
+        console.log(response);
+        if (response?.status === "berhasil") {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "success",
+            title: "Signed in successfully",
+          });
+          return navigate("/home/dashboard", { replace: true });
+        }
+      } catch (error) {
+        console.log(error);
+        setIsLoading(true);
+        if (error?.response?.status === 422) {
+          toast.error(error?.response?.data?.msg, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
     },
   });
-  // const handleChange = (e) => {
-  //   e.preventDefault();
-  //   setPayload((payload) => {
-  //     return {
-  //       ...payload,
-  //       [e.target.name]: e.target.value,
-  //     };
-  //   });
-  // };
-  const [isLoading, setIsLoading] = React.useState(false);
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
 
-  //   try {
-  //     setIsLoading(true);
-  //     const response = await dispatch(authLogin(payload));
-  //     console.log("response", response);
-  //     // return navigate("/article", { replace: true });
-  //     if (response?.status === "Success") {
-  //       return navigate("/article", { replace: true });
-  //     } else {
-  //       setErrorEmail(response?.response?.data?.errors?.email);
-  //       setErrorPassword(response?.response?.data?.errors?.password);
-  //       setMessageError(response?.response?.data?.message);
-  //     }
-  //   } catch (err) {
-  //     console.log("error =>", err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-
-  //   setPayload(() => {
-  //     return {
-  //       email: "",
-  //       password: "",
-  //     };
-  //   });
-  // };
   return (
     <div className="flex justify-center items-center h-screen bg-[#F5F2EA]">
+      {" "}
+      <ToastContainer
+        position="top-center"
+        autoClose={2500}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <div className="bg-white w-[26rem] px-[2rem] py-[2.1rem] rounded-[1.5rem]">
         <div className="text-center px-9">
           {" "}

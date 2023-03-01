@@ -5,13 +5,9 @@ import {
   applyMiddleware,
 } from "redux";
 import { authProcess } from "../reducers/authReducer";
-import { reducer } from "../reducers/countReducer";
-import { colorReducer } from "../reducers/colorReducer";
 import thunk from "redux-thunk";
 // export
 const allReducers = combineReducers({
-  count: reducer,
-  color: colorReducer,
   authProcess: authProcess,
 });
 

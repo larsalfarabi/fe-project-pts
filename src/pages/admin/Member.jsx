@@ -1,6 +1,5 @@
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Filter, Input, Search } from "../../komponen/input";
 import ModalDelete from "../../komponen/ModalDelete";
 import Select from "../../komponen/select";
@@ -9,7 +8,7 @@ import PasswordInput from "../../komponen/InputPassword";
 const Member = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
-  const navigate = useNavigate();
+
   const formik = useFormik({
     initialValues: {
       nama: "",
@@ -30,14 +29,37 @@ const Member = () => {
     onSubmit: (values) => {
       alert(JSON.stringify(values, null, 2));
       formik.resetForm();
-      return navigate("/home/outlet", { replace: true });
+      return setShowCreate(false)
+    },
+  });
+  const formikEdit = useFormik({
+    initialValues: {
+      nama: "",
+      username: "",
+      password: "",
+      nama_outlet: "",
+      role: "",
+    },
+    validationSchema: Yup.object().shape({
+      nama: Yup.string().required("Nama  is required"),
+      username: Yup.string().required("Username  is required"),
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .required("Password is required"),
+      nama_outlet: Yup.string().required("Nama Outlet is required"),
+      role: Yup.string().required("Role is required"),
+    }),
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+      formik.resetForm();
+      return setShowModal(false)
     },
   });
   return (
     <div className="border border-gray-100 h-full rounded-lg px-4 py-3">
       <div className="flex justify-between mb-5">
         <p className="font-semibold text-lg ">Member Data</p>
-        <div className="flex space-x-3">
+        <div className="flex">
           {" "}
           <Search />
           <Filter />
@@ -238,57 +260,58 @@ const Member = () => {
                             </button>
                           </div>
                           {/*body*/}
-                          <form action="" onSubmit={formik.handleSubmit}>
+                          <form action="" onSubmit={formikEdit.handleSubmit}>
                             <div className="relative p-6 my-4 space-y-3 flex-auto ">
                               <div className="grid grid-cols-2 gap-4">
                                 <Input
                                   placeholder="Nama Pengguna"
                                   name={"nama"}
                                   type="text"
-                                  values={formik.values.nama}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
+                                  values={formikEdit.values.nama}
+                                  onChange={formikEdit.handleChange}
+                                  onBlur={formikEdit.handleBlur}
                                   isError={
-                                    formik.touched.nama && formik.errors.nama
+                                    formikEdit.touched.nama &&
+                                    formikEdit.errors.nama
                                   }
-                                  textError={formik.errors.nama}
+                                  textError={formikEdit.errors.nama}
                                 />{" "}
                                 <Input
                                   placeholder="Username"
                                   name={"username"}
                                   type="text"
-                                  values={formik.values.username}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
+                                  values={formikEdit.values.username}
+                                  onChange={formikEdit.handleChange}
+                                  onBlur={formikEdit.handleBlur}
                                   isError={
-                                    formik.touched.username &&
-                                    formik.errors.username
+                                    formikEdit.touched.username &&
+                                    formikEdit.errors.username
                                   }
-                                  textError={formik.errors.username}
+                                  textError={formikEdit.errors.username}
                                 />{" "}
                               </div>
                               <PasswordInput
-                                value={formik.values.password}
+                                value={formikEdit.values.password}
                                 placeholder={"Passcode"}
                                 name={"password"}
                                 type="password"
-                                onBlur={formik.handleBlur}
-                                onChange={formik.handleChange}
+                                onBlur={formikEdit.handleBlur}
+                                onChange={formikEdit.handleChange}
                                 isError={
-                                  formik.touched.password &&
-                                  formik.errors.password
+                                  formikEdit.touched.password &&
+                                  formikEdit.errors.password
                                 }
-                                textError={formik.errors.password}
+                                textError={formikEdit.errors.password}
                               />
                               <Select
                                 name="nama_outlet"
-                                value={formik.values.nama_outlet}
-                                onChange={formik.handleChange}
+                                value={formikEdit.values.nama_outlet}
+                                onChange={formikEdit.handleChange}
                                 isError={
-                                  formik.errors.nama_outlet &&
-                                  formik.touched.nama_outlet
+                                  formikEdit.errors.nama_outlet &&
+                                  formikEdit.touched.nama_outlet
                                 }
-                                textError={formik.errors.nama_outlet}
+                                textError={formikEdit.errors.nama_outlet}
                               >
                                 <option value="" className="text-gray-400">
                                   Pilih Nama Outlet
@@ -299,12 +322,13 @@ const Member = () => {
                               </Select>
                               <Select
                                 name="role"
-                                value={formik.values.role}
-                                onChange={formik.handleChange}
+                                value={formikEdit.values.role}
+                                onChange={formikEdit.handleChange}
                                 isError={
-                                  formik.errors.role && formik.touched.role
+                                  formikEdit.errors.role &&
+                                  formikEdit.touched.role
                                 }
-                                textError={formik.errors.role}
+                                textError={formikEdit.errors.role}
                               >
                                 <option value="" className="text-gray-400">
                                   Pilih Jenis
@@ -326,7 +350,7 @@ const Member = () => {
                               <button
                                 className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                 type="submit"
-                                onClick={() => formik.handleSubmit}
+                                onClick={() => formikEdit.handleSubmit}
                               >
                                 Save Changes
                               </button>

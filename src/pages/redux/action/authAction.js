@@ -6,12 +6,13 @@ export function authLogin(payload) {
     try {
       let response = await loginProses(payload);
       const data = response.data;
+      console.log(data?.token);
       dispatch({
         type: "login",
-        name: data?.user?.name,
-        username: data?.user?.username,
-        id_outlet: data?.user?.id_outlet,
-        role: data?.user?.role,
+        name: data?.data?.nama,
+        username: data?.data?.username,
+        id_outlet: data?.data?.id_outlet,
+        role: data?.data?.role,
         isAuth: true,
       });
       Cookies.set("myapps_token", data?.token);
@@ -51,7 +52,7 @@ export function authMe(payload) {
 
       dispatch({
         type: "login",
-        name: data?.user?.name,
+        nama: data?.user?.nama,
         email: data?.user?.email,
         isAuth: true,
       });

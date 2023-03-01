@@ -1,6 +1,8 @@
 const intialState = {
   name: "",
-  email: "",
+  username: "",
+  id_outlet: "",
+  role: "",
   isAuth: false,
 };
 
@@ -9,7 +11,9 @@ export const authProcess = (state = intialState, action) => {
     return {
       ...state,
       name: action.name,
-      email: action.email,
+      username: action.username,
+      id_outlet: action.id_outlet,
+      role: action.role,
       isAuth: action.isAuth,
     };
   }

@@ -54,32 +54,24 @@ function Search() {
 }
 function Filter() {
   return (
-    <div className="w-[40px] h-[40px] rounded-full bg-[#FAFAFA] relative cursor-pointer flex justify-center items-center">
+    <div className="w-[40px] h-[40px] rounded-full bg-[#FAFAFA] relative cursor-pointer flex justify-center items-center mx-3">
       <button>
         <svg
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
           xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-[22px] h-[22px]"
         >
-          <g id="Iconly/Regular/Light/Filter 3">
-            <g id="Filter">
-              <path
-                id="Stroke 1"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M4.56517 3.00012C3.70108 3.00012 3 3.71299 3 4.59052V5.52656C3 6.17659 3.24719 6.8017 3.68936 7.27189L8.5351 12.4244L8.53723 12.4212C9.47271 13.3789 9.99905 14.6735 9.99905 16.0234V20.5953C9.99905 20.9008 10.3187 21.0958 10.584 20.9517L13.3436 19.448C13.7602 19.2205 14.0201 18.7785 14.0201 18.2985V16.0115C14.0201 14.6692 14.539 13.38 15.466 12.4244L20.3117 7.27189C20.7528 6.8017 21 6.17659 21 5.52656V4.59052C21 3.71299 20.3 3.00012 19.4359 3.00012H4.56517Z"
-                stroke="black"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </g>
-          </g>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
+          />
         </svg>
       </button>
     </div>
   );
 }
-export { Input, Search,Filter };
+export { Input, Search, Filter };

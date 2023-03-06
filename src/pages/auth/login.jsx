@@ -49,13 +49,9 @@ const Login = () => {
             icon: "success",
             title: "Signed in successfully",
           });
-          return navigate("/home/dashboard", { replace: true });
-        }
-      } catch (error) {
-        console.log(error);
-        setIsLoading(true);
-        if (error?.response?.status === 422) {
-          toast.error(error?.response?.data?.msg, {
+          return navigate("/admin/dashboard", { replace: true });
+        } else {
+          toast.error(response?.response?.data?.msg, {
             position: "top-right",
             autoClose: 2500,
             hideProgressBar: false,
@@ -66,6 +62,9 @@ const Login = () => {
             theme: "light",
           });
         }
+      } catch (error) {
+        console.log(error);
+        setIsLoading(true);
       } finally {
         setIsLoading(false);
       }

@@ -17,12 +17,12 @@ const Home = () => {
   };
 
   const activeClassname =
-    "bg-[#F9FAFB] rounded-md w-full flex items-center items-center px-4 py-2 cursor-pointer ";
+    "bg-[#F9FAFB] rounded-md w-full flex items-center items-center px-4 py-2 cursor-pointer shadow shadow-[#f9fafb]";
   const nonActiveClassname =
     "flex text-black w-full items-center px-4 py-2 cursor-pointer bg-white";
   console.log("item 1 =>", path);
   return (
-    <div className="w-screen h-screen">
+    <div className="w-screen h-screen bg-white">
       {" "}
       <ToastContainer
         position="top-center"

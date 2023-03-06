@@ -8,6 +8,7 @@ import { Outlet, Paket, Member, Pelanggan, Transaksi } from "./pages/admin";
 
 import NotFound from "./pages/error/404";
 import Dashboard from "./pages/admin/Dashboard";
+import ProtectedRoute from "./routers/protectRoute";
 
 // import Input from "./component/Input";
 // import TextArea from "./component/TextArea";
@@ -23,18 +24,66 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Home />}>
-          <Route path="dashboard" element={<Dashboard />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        >
+          <Route
+            path="dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="data">
-            <Route path="outlet" element={<Outlet />} />
-            <Route path="paket" element={<Paket />} />
-            <Route path="member" element={<Member />} />
+            <Route
+              path="outlet"
+              element={
+                <ProtectedRoute>
+                  <Outlet />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="paket"
+              element={
+                <ProtectedRoute>
+                  <Paket />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="member"
+              element={
+                <ProtectedRoute>
+                  <Member />
+                </ProtectedRoute>
+              }
+            />
           </Route>
-          <Route path="pelanggan" element={<Pelanggan />} />
-          <Route path="transaksi" element={<Transaksi />} />
+          <Route
+            path="pelanggan"
+            element={
+              <ProtectedRoute>
+                <Pelanggan />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="transaksi"
+            element={
+              <ProtectedRoute>
+                <Transaksi />
+              </ProtectedRoute>
+            }
+          />
         </Route>
         <Route path="/404" element={<NotFound />} />
-
         <Route path="*" element={<Navigate to="/404" replace={true} />} />
       </Routes>
     </div>

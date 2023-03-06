@@ -1,6 +1,6 @@
 import React from "react";
 
-const ModalDelete = ({ title, color, margin, subTitle }) => {
+const ModalDelete = ({ title, color, margin, subTitle, onclick }) => {
   const [showModal, setShowModal] = React.useState(false);
   return (
     <>
@@ -39,7 +39,7 @@ const ModalDelete = ({ title, color, margin, subTitle }) => {
                     ></path>
                   </svg>
                   <p className="mb-5 text-[17px] font-medium text-gray-600 text-center">
-                   Apakah kamu yankin ingin menghapus {subTitle} ini?
+                    Apakah kamu yankin ingin menghapus {subTitle} ini?
                   </p>
                 </div>
                 {/*footer*/}
@@ -47,7 +47,7 @@ const ModalDelete = ({ title, color, margin, subTitle }) => {
                   <button
                     className="text-white bg-emerald-500 active:bg-emerald-600 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={onclick}
                   >
                     Yes, I'm sure
                   </button>

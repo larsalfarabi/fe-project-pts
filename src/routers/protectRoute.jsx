@@ -16,7 +16,9 @@ const ProtectedRoute = ({ children }) => {
   const onLoaded = async (values) => {
     let result = await dispatch(authMe(values));
     syncToken();
-    setProcess(false);
+    setTimeout(() => {
+      setProcess(false);
+    }, 2000);
 
     console.log("res", result);
   };
@@ -36,9 +38,10 @@ const ProtectedRoute = ({ children }) => {
   if (process) {
     return (
       <div className="flex justify-center items-center w-full h-screen  ">
-        <div class="loading">
-          <div class="d1"></div>
-          <div class="d2"></div>
+        <div class="three-body">
+          <div class="three-body__dot"></div>
+          <div class="three-body__dot"></div>
+          <div class="three-body__dot"></div>
         </div>
       </div>
     );

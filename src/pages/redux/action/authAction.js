@@ -49,11 +49,12 @@ export function authMe(payload) {
     try {
       let response = await authMeProcess();
       let data = response.data;
-
       dispatch({
         type: "login",
-        nama: data?.user?.nama,
-        email: data?.user?.email,
+        name: data?.data?.nama,
+        username: data?.data?.username,
+        id_outlet: data?.data?.id_outlet,
+        role: data?.data?.role,
         isAuth: true,
       });
 

@@ -13,7 +13,7 @@ function Input({ label, isError, textError, ...props }) {
     </div>
   );
 }
-function Search() {
+function Search({ nama, value, change, submit }) {
   return (
     <div className="input-wrapper">
       <button className="icon">
@@ -48,7 +48,15 @@ function Search() {
           </g>
         </svg>
       </button>
-      <input placeholder="search.." className="input" name="text" type="text" />
+      <input
+        placeholder="search.."
+        onSubmit={submit}
+        className="input"
+        name={nama}
+        type="text"
+        value={value}
+        onChange={change}
+      />
     </div>
   );
 }

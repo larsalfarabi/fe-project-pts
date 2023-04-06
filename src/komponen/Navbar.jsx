@@ -1,15 +1,18 @@
 /* eslint-disable jsx-a11y/alt-text */
 
 import React from "react";
+import { useSelector } from "react-redux";
 import Search from "../assets/Search.svg";
 const Navbar = ({ categories }) => {
+  const auth = useSelector((state) => state.authProcess);
+  console.log("Use Selector =>", auth);
   return (
-    <div className="w-full h-[12%]">
-      <div className="h-full grid grid-cols-6">
-        <div className="border-r w-[110%] h-full border-gray-300">
+    <div className="h-[12%] w-full">
+      <div className="grid h-full grid-cols-7">
+        <div className="h-full w-[105%] border-r border-gray-300">
           <img src="" alt="logo" />
         </div>
-        <div className="col-span-5 flex items-center justify-between h-full pl-10 px-6">
+        <div className="col-span-6 flex h-full items-center justify-between px-4">
           <h1 className="text-[26px] font-semibold">{categories}</h1>
           {/* <form>
             <label
@@ -39,8 +42,8 @@ const Navbar = ({ categories }) => {
             />
             <div className="flex-col">
               {" "}
-              <p className="font-medium text-sm mt-2">Admin</p>
-              <p className="text-xs text-gray-400">Admin</p>
+              <p className="mt-2 text-sm font-medium">Nama   : {auth.name}</p>
+              <p className="text-xs text-gray-400">Peran: {auth.role}</p>
             </div>
           </div>
         </div>

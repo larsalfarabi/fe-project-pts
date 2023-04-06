@@ -1,6 +1,7 @@
 import axios from "./baseUrl2";
 
-export async function getAllPelanggan(keyword, page, pageSize) {
+export async function
+  getAllPelanggan(keyword, page, pageSize) {
   return axios.get(
     `/member/list?keyword=${keyword}&page=${page}&pageSize=${pageSize}`
   );

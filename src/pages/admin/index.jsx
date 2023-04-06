@@ -1,7 +1,7 @@
 import Outlet from "./outlet";
 import Paket from "./paket";
-import Member from "./Member";
+import User from "./User";
 import Pelanggan from "./Pelanggan";
 import Transaksi from "./Transaksi";
 
-export { Outlet, Paket, Member, Pelanggan, Transaksi };
+export { Outlet, Paket, User, Pelanggan, Transaksi };

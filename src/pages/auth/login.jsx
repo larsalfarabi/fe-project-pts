@@ -31,7 +31,7 @@ const Login = () => {
       try {
         setIsLoading(true);
         const response = await dispatch(authLogin(values));
-        console.log(response);
+        console.log("login =>", response);
         if (response?.status === "berhasil") {
           const Toast = Swal.mixin({
             toast: true,
@@ -49,7 +49,15 @@ const Login = () => {
             icon: "success",
             title: "Signed in successfully",
           });
-          return navigate("/admin/dashboard", { replace: true });
+          if (response.data.role === "kasir") {
+            return navigate("/kasir/data", { replace: true });
+          }
+          if (response.data.role === "admin") {
+            return navigate("/admin/data", { replace: true });
+          }
+          if (response.data.role === "owner") {
+            return navigate("/owner/data", { replace: true });
+          }
         } else {
           toast.error(response?.response?.data?.msg, {
             position: "top-right",
@@ -72,7 +80,7 @@ const Login = () => {
   });
 
   return (
-    <div className="flex justify-center items-center h-screen bg-[#F5F2EA]">
+    <div className="flex h-screen items-center justify-center bg-[#F5F2EA]">
       {" "}
       <ToastContainer
         position="top-center"
@@ -86,18 +94,18 @@ const Login = () => {
         pauseOnHover
         theme="light"
       />
-      <div className="bg-white w-[26rem] px-[2rem] py-[2.1rem] rounded-[1.5rem]">
-        <div className="text-center px-9">
+      <div className="w-[26rem] rounded-[1.5rem] bg-white px-[2rem] py-[2.1rem]">
+        <div className="px-9 text-center">
           {" "}
-          <h1 className="font-semibold text-2xl">Sign In</h1>
+          <h1 className="text-2xl font-semibold">Masuk</h1>
           <p className="my-4 text-[15px] font-medium">
-            Hey, Enter your details to get sing In to your account
+            Hei, Masukkan detail Anda untuk masuk ke akun Anda
           </p>
         </div>
         <form action="" onSubmit={formik.handleSubmit}>
           <Input
             value={formik.values.username}
-            placeholder={"Enter Username"}
+            placeholder={"Nama Belakang"}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             type="text"
@@ -107,7 +115,7 @@ const Login = () => {
           />
           <PasswordInput
             value={formik.values.password}
-            placeholder={"Passcode"}
+            placeholder={"Kode Sandi"}
             name={"password"}
             type="password"
             onBlur={formik.handleBlur}
@@ -127,8 +135,8 @@ const Login = () => {
             <option value="kasir">Kasir</option>
             <option value="owner">Owner</option>
           </Select> */}
-          <div className="grid grid-cols-1 gap-5 mt-8">
-            <Button title={isLoading ? "Proses" : "Sign in"} />
+          <div className="mt-8 grid grid-cols-1 gap-5">
+            <Button title={isLoading ? "Proses" : "Masuk"} />
           </div>
         </form>
         {/* <p className="text-sm text-center font-medium my-5">
@@ -139,15 +147,15 @@ const Login = () => {
           <Sosmed title={"Apple ID"} />
           <Sosmed title={"Facebook"} />
         </div> */}
-        <p className="text-[13px] text-center mt-5">
-          Don't have an account?{" "}
+        <p className="mt-5 text-center text-[13px]">
+          Belum punya akun?
           <span
-            className="font-semibold text-[13px] cursor-pointer"
+            className="ml-1 cursor-pointer text-[13px] font-semibold"
             onClick={() => {
               return navigate("/register", { replace: true });
             }}
           >
-            Request Now
+            Minta Sekarang
           </span>
         </p>
       </div>

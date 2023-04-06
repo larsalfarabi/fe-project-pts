@@ -9,6 +9,7 @@ import { syncToken } from "../API/baseUrl2";
 const ProtectedRoute = ({ children }) => {
   const auth = Cookies.get("myapps_token");
   const isAuth = useSelector((state) => state?.authProcess?.isAuth);
+  const role = useSelector((state) => state?.authProcess?.role);
 
   console.log("auth => ", isAuth);
   let [process, setProcess] = React.useState(true);
@@ -37,7 +38,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (process) {
     return (
-      <div className="flex justify-center items-center w-full h-screen  ">
+      <div className="flex h-screen w-full items-center justify-center  ">
         <div class="three-body">
           <div class="three-body__dot"></div>
           <div class="three-body__dot"></div>
@@ -47,7 +48,7 @@ const ProtectedRoute = ({ children }) => {
     );
   } else {
     console.log("auth", auth);
-    return auth !== undefined ? children : <Navigate to={"/login"} />;
+    return auth !== undefined ? children : <Navigate to={"/login"} replace />;
   }
 };
 

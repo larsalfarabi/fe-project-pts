@@ -7,7 +7,7 @@ const InputPassword = ({ label, isError, textError, ...props }) => {
     <div className="relative">
       <input
         {...props}
-        className="my-1 border border-gray-300 rounded-md px-4 py-3 w-full text-sm font-medium focus:outline-none focus:border focus:border-gray-400 placeholder:text-sm placeholder:font-medium placeholder:text-gray-500"
+        className="my-1 w-full rounded-md border border-gray-300 px-4 py-3 text-sm font-medium placeholder:text-sm placeholder:font-medium placeholder:text-gray-500 focus:border focus:border-gray-400 focus:outline-none"
         id={label}
         type={changeIcon ? "text" : "password"}
       ></input>
@@ -17,9 +17,9 @@ const InputPassword = ({ label, isError, textError, ...props }) => {
         }}
         className="absolute right-4 top-5 cursor-pointer text-[13px] font-medium"
       >
-        {changeIcon ? "Hide" : "Show"}
+        {changeIcon ? "Sembunyikan" : "Tunjukan"}
       </p>
-      {isError && <p className="text-sm text-red-500 italic">{textError}</p>}
+      {isError && <p className="text-sm italic text-red-500">{textError}</p>}
     </div>
   );
 };

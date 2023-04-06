@@ -8,6 +8,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./pages/redux/store/index";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Toaster } from "react-hot-toast";
 const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -17,7 +18,7 @@ root.render(
       <Router>
         {" "}
         <QueryClientProvider client={queryClient}>
-          {" "}
+          <Toaster />
           <App />
         </QueryClientProvider>
       </Router>

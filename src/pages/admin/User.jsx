@@ -1,66 +1,90 @@
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { Filter, Input, Search } from "../../komponen/input";
-import Select from "../../komponen/select";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import ModalDelete from "../../komponen/Modals/ModalDelete";
-import convertRupiah from "rupiah-format";
+import Select from "../../komponen/select";
+import * as Yup from "yup";
+import PasswordInput from "../../komponen/InputPassword";
 import {
-  createPaket,
-  deletePaket,
-  getAllPaket,
-  getDetailPaket,
-  updatePaket,
-} from "../../API/paket";
-import toast from "react-hot-toast";
+  createUser,
+  deleteUser,
+  getAllUser,
+  getDetailUser,
+  updateUser,
+} from "../../API/user";
 import { getAllOutlet } from "../../API/outlet";
-import CurrencyInput from "react-currency-input-field";
+import toast from "react-hot-toast";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import convert from "../../komponen/convert";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
-
-const Paket = () => {
+const User = () => {
   const [showModal, setShowModal] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
-  const [pageOutlet, setPageOutlet] = useState(1);
-  const [pageSizeOutlet, setPageSizeOutlet] = useState(5);
-  const [listPaket, setListPaket] = useState([]);
+  const [listUser, setListUser] = useState([]);
   const [listOutlet, setListOutlet] = useState([]);
-
   const search = useFormik({
     initialValues: {
       keyword: "",
     },
-    onSubmit: (values) => {},
   });
   const formik = useFormik({
     initialValues: {
+      nama: "",
+      username: "",
+      password: "",
       id_outlet: "",
-      jenis: "",
-      nama_paket: "",
-      harga: "",
+      role: "",
     },
     validationSchema: Yup.object().shape({
-      id_outlet: Yup.string().required("Nama Outlet  is required"),
-      jenis: Yup.string().required("Jenis is required"),
-      nama_paket: Yup.string().required("Nama Paket is required"),
-      harga: Yup.string().required("Harga is required"),
+      nama: Yup.string().required("Nama  is required"),
+      username: Yup.string().required("Username  is required"),
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .required("Password is required"),
+      id_outlet: Yup.string().required("Nama Outlet is required"),
+      role: Yup.string().required("Role is required"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const response = await createUser(values);
+        console.log("create =>", response);
+        if (response?.status === 200) {
+          toast.success(response?.data?.msg);
+          formik.resetForm();
+          getListUserHandle();
+          return setShowCreate(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+  });
+  const formikEdit = useFormik({
+    initialValues: {
+      nama: "",
+      username: "",
+      password: "",
+      id_outlet: "",
+      role: "",
+    },
+    validationSchema: Yup.object().shape({
+      nama: Yup.string().required("Nama  is required"),
+      username: Yup.string().required("Username  is required"),
+      password: Yup.string()
+        .min(8, "Password must be at least 8 characters")
+        .required("Password is required"),
+      id_outlet: Yup.string().required("Nama Outlet is required"),
+      role: Yup.string().required("Role is required"),
     }),
     onSubmit: async (values) => {
       try {
         setIsLoading(true);
-
-        const response = await createPaket(values);
+        const response = await updateUser(values.id, values);
         console.log(response);
-        if (response?.status === 200) {
-          toast.success(response?.data?.msg);
-          formik.resetForm();
-          getListPaketHandle();
-          return setShowCreate(false);
-        }
+        getListUserHandle();
+        return setShowModal(false);
       } catch (error) {
         console.log(error);
       } finally {
@@ -68,29 +92,17 @@ const Paket = () => {
       }
     },
   });
-  const formikEdit = useFormik({
-    initialValues: {
-      id_outlet: "",
-      jenis: "",
-      nama_paket: "",
-      harga: "",
-    },
-    validationSchema: Yup.object().shape({
-      id_outlet: Yup.string().required("Nama Outlet  is required"),
-      jenis: Yup.string().required("Jenis is required"),
-      nama_paket: Yup.string().required("Nama Paket is required"),
-      harga: Yup.string().required("Harga is required"),
-    }),
-    onSubmit: (values) => {},
-  });
 
-  const getListPaketHandle = async () => {
+  const getListUserHandle = async () => {
     try {
-      const response = await getAllPaket(search.values.keyword, page, pageSize);
-      console.log(response.data.data.rows);
-      setListPaket(response?.data.data.rows);
+      setIsLoading(true);
+      const response = await getAllUser(search.values.keyword, page, pageSize);
+      console.log("User =>", response);
+      setListUser(response?.data?.data?.rows);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   const getListOutletHandle = async () => {
@@ -98,8 +110,8 @@ const Paket = () => {
       setIsLoading(true);
       const response = await getAllOutlet(
         search.values.keyword,
-        pageOutlet,
-        pageSizeOutlet
+        page,
+        pageSize
       );
       console.log(response.data.data);
       setListOutlet(response?.data?.data?.rows);
@@ -109,18 +121,19 @@ const Paket = () => {
       setIsLoading(false);
     }
   };
-  const getDetailPaketHandle = async (id) => {
+  const getDetailUserHandle = async (id) => {
     try {
       setShowModal(true);
-      const response = await getDetailPaket(id);
-      console.log("detail =>", response.data.data);
-      const dataPaket = response.data.data;
+      const response = await getDetailUser(id);
+      console.log(response);
+      const dataUser = response?.data?.data;
       formikEdit.setValues({
-        id: dataPaket?.id,
-        id_outlet: dataPaket?.id_outlet,
-        jenis: dataPaket?.jenis,
-        nama_paket: dataPaket?.nama_paket,
-        harga: dataPaket?.harga,
+        id: dataUser?.id,
+        nama: dataUser?.nama,
+        username: dataUser?.username,
+        password: dataUser?.password,
+        id_outlet: dataUser?.id_outlet,
+        role: dataUser?.role,
       });
     } catch (error) {
       console.log(error);
@@ -128,17 +141,16 @@ const Paket = () => {
   };
 
   useEffect(() => {
-    getListPaketHandle();
+    getListUserHandle();
     getListOutletHandle();
   }, [search.values.keyword, page, pageSize]);
-
   return (
     <div className="flex h-full flex-col justify-between rounded-lg border border-gray-100 px-4 py-3">
       <div>
         {" "}
         <div className="mb-5 flex justify-between">
-          <p className="text-lg font-semibold">Data Paket</p>
-          <div className="flex ">
+          <p className="text-lg font-semibold ">Data Pengguna</p>
+          <div className="flex">
             {" "}
             <Search
               nama="keyword"
@@ -154,7 +166,7 @@ const Paket = () => {
               }}
               onClick={() => setShowCreate(true)}
             >
-              Buat Paket
+              Buat Pengguna
             </button>
             {showCreate ? (
               <>
@@ -164,7 +176,9 @@ const Paket = () => {
                     <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
                       {/*header*/}
                       <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 py-4 px-5">
-                        <h3 className="text-2xl font-semibold">Buat Paket</h3>
+                        <h3 className="text-2xl font-semibold">
+                          Buat Pengguna
+                        </h3>
                         <button
                           className="text-red-00 float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none outline-none focus:outline-none"
                           onClick={() => setShowCreate(false)}
@@ -175,6 +189,45 @@ const Paket = () => {
                       {/*body*/}
                       <form action="" onSubmit={formik.handleSubmit}>
                         <div className="relative my-4 flex-auto space-y-3 p-6 ">
+                          <div className="grid grid-cols-2 gap-4">
+                            <Input
+                              placeholder="Nama Pengguna"
+                              name={"nama"}
+                              type="text"
+                              values={formik.values.nama}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              isError={
+                                formik.touched.nama && formik.errors.nama
+                              }
+                              textError={formik.errors.nama}
+                            />{" "}
+                            <Input
+                              placeholder="Nama belakang"
+                              name={"username"}
+                              type="text"
+                              values={formik.values.username}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              isError={
+                                formik.touched.username &&
+                                formik.errors.username
+                              }
+                              textError={formik.errors.username}
+                            />
+                          </div>
+                          <PasswordInput
+                            value={formik.values.password}
+                            placeholder={"Kode Sandi"}
+                            name={"password"}
+                            type="password"
+                            onBlur={formik.handleBlur}
+                            onChange={formik.handleChange}
+                            isError={
+                              formik.touched.password && formik.errors.password
+                            }
+                            textError={formik.errors.password}
+                          />
                           <Select
                             name="id_outlet"
                             value={formik.values.id_outlet}
@@ -195,69 +248,19 @@ const Paket = () => {
                             })}
                           </Select>
                           <Select
-                            name="jenis"
-                            value={formik.values.jenis}
+                            name="role"
+                            value={formik.values.role}
                             onChange={formik.handleChange}
-                            isError={
-                              formik.errors.jenis && formik.touched.jenis
-                            }
-                            textError={formik.errors.jenis}
+                            isError={formik.errors.role && formik.touched.role}
+                            textError={formik.errors.role}
                           >
                             <option value="" className="text-gray-400">
                               Pilih Peran
                             </option>
-                            <option value="kiloan">Kiloan</option>
-                            <option value="selimut">Selimut</option>
-                            <option value="bed_cover">Bed Cover</option>
-                            <option value="kaos">Kaos</option>
-                            <option value="lainn">Lain</option>
+                            <option value="admin">Admin</option>
+                            <option value="kasir">Kasir</option>
+                            <option value="owner">Owner</option>
                           </Select>
-                          <Input
-                            placeholder="Nama Paket"
-                            name={"nama_paket"}
-                            value={formik.values.nama_paket}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            isError={
-                              formik.errors.nama_paket &&
-                              formik.touched.nama_paket
-                            }
-                            textError={formik.errors.nama_paket}
-                          />
-                          {/* <Input
-                          placeholder="Harga"
-                          name={"harga"}
-                          type="number"
-                          value={formik.values.harga}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          isError={formik.errors.harga && formik.touched.harga}
-                          textError={formik.errors.harga}
-                        /> */}
-                          <div>
-                            {" "}
-                            <CurrencyInput
-                              className="my-1 w-full rounded-md border border-gray-300 px-4 py-3 text-sm font-medium placeholder:text-sm placeholder:font-medium placeholder:text-gray-500 focus:border focus:border-gray-400 focus:outline-none"
-                              placeholder="Harga"
-                              id="harga"
-                              name="harga"
-                              defaultValue={0}
-                              decimalsLimit={2}
-                              allowNegativeValue={false}
-                              step={2}
-                              value={formik.values.harga}
-                              prefix="Rp "
-                              onValueChange={(value) => {
-                                // setNominal(value)
-                                formik.setFieldValue("harga", value);
-                              }}
-                            />{" "}
-                            {formik.errors.harga && formik.touched.harga && (
-                              <p className="text-sm italic text-red-500">
-                                {formik.errors.harga}
-                              </p>
-                            )}
-                          </div>
                         </div>
                         {/*footer*/}
                         <div className="flex items-center justify-end rounded-b border-t border-solid border-slate-200 p-6">
@@ -273,46 +276,45 @@ const Paket = () => {
                             type="submit"
                             onClick={() => formik.handleSubmit}
                           >
-                            {isLoading ? "Proses" : "Simpan Perubahan"}
+                            Simpan Perubahan
                           </button>
                         </div>
                       </form>
                     </div>
                   </div>
                 </div>
-                <div className="fixed inset-0 z-40 bg-black opacity-10"></div>
+                <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
               </>
-            ) : null}
+            ) : null}{" "}
           </div>
         </div>
         <div className="px-3">
           {" "}
-          <table class="table-auto">
+          <table class="table-auto ">
             <thead>
               <tr>
                 <th className="w-[100px] border-b border-dashed border-gray-200 text-start font-medium">
                   No
                 </th>
                 <th className="w-[250px] border-b border-dashed border-gray-200 text-start font-medium ">
-                  Nama Outlet
-                </th>
-                <th className="w-[200px] border-b border-dashed border-gray-200 text-start font-medium">
-                  Jenis
+                  Name
                 </th>
                 <th className="w-[250px] border-b border-dashed border-gray-200 text-start font-medium">
-                  Nama Paket
+                  Nama Belakang
                 </th>
                 <th className="w-[250px] border-b border-dashed border-gray-200 text-start font-medium">
-                  Harga
+                  Nama Toko
+                </th>
+                <th className="w-[250px] border-b border-dashed border-gray-200 text-start font-medium">
+                  Peran
                 </th>
                 <th className="w-[200px] border-b border-dashed border-gray-200 text-start font-medium">
                   Aksi
                 </th>
               </tr>
             </thead>
-
             <tbody className="relative">
-              {listPaket.length === 0 ? (
+              {listUser.length === 0 ? (
                 <div className="flex">
                   <p className="absolute top-[13rem] right-[28rem]">
                     *** Tidak Ada Data ***
@@ -321,37 +323,35 @@ const Paket = () => {
               ) : (
                 <>
                   {" "}
-                  {listPaket?.map((item, index) => {
+                  {listUser?.map((item, index) => {
                     return (
-                      <tr className="text-left ">
+                      <tr className="text-left " key={index}>
                         <td className="border-b border-dashed border-gray-300 text-[14.5px] font-medium">
                           {index + 1}
                         </td>
                         <td className="border-b border-dashed border-gray-300 text-[14.5px] font-medium ">
+                          {item.nama}
+                        </td>
+                        <td className="border-b border-dashed border-gray-300 text-[14.5px] font-medium">
+                          {item.username}
+                        </td>
+                        <td className="border-b border-dashed border-gray-300 text-[14.5px] font-medium">
                           {item.outlet.nama}
                         </td>
                         <td className="border-b border-dashed border-gray-300 text-[14.5px] font-medium">
-                          {item.jenis}
-                        </td>
-                        <td className="border-b border-dashed border-gray-300 text-[14.5px] font-medium">
-                          {item.nama_paket}
-                        </td>
-                        <td className="border-b border-dashed border-gray-300 text-[14.5px] font-medium">
-                          {convert(item.harga)}
+                          {item.role}
                         </td>
                         <td className="grid w-[200px] grid-cols-2 gap-2 border-b border-dashed border-gray-300">
-                          {" "}
                           <button
-                            className="mr-1 mb-1 flex h-10 items-center
-justify-center rounded text-sm font-bold uppercase  text-black outline-none transition-all duration-150 ease-linear focus:outline-none active:bg-pink-600"
+                            className="mr-1 mb-1 flex h-10 items-center justify-center rounded text-sm font-bold uppercase  text-black outline-none transition-all duration-150 ease-linear focus:outline-none active:bg-pink-600"
                             type="button"
                             style={{
                               background: "#fafafa",
                               margin: "12px 0",
                             }}
-                            onClick={() => getDetailPaketHandle(item?.id)}
+                            onClick={() => getDetailUserHandle(item?.id)}
                           >
-                            <PencilIcon className="h-[22px] w-[22px] text-black" />
+                            <PencilIcon className="h-[22px] w-[22px] text-black" />{" "}
                           </button>
                           {showModal ? (
                             <>
@@ -361,11 +361,11 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
                                   <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
                                     {/*header*/}
                                     <div className="flex items-start justify-between rounded-t border-b border-solid border-slate-200 py-4 px-5">
-                                      <h3 className="text-2xl font-semibold text-black">
-                                        Edit Paket
+                                      <h3 className="text-2xl font-semibold">
+                                        Edit Pengguna
                                       </h3>
                                       <button
-                                        className="text-red-00 float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black outline-none focus:outline-none"
+                                        className="text-red-00 float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none outline-none focus:outline-none"
                                         onClick={() => setShowModal(false)}
                                       >
                                         ×
@@ -376,7 +376,33 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
                                       action=""
                                       onSubmit={formikEdit.handleSubmit}
                                     >
-                                      <div className="relative my-4 flex-auto space-y-3 p-6">
+                                      <div className="relative my-4 flex-auto space-y-3 p-6 ">
+                                        <Input
+                                          placeholder="Nama Pengguna"
+                                          name={"nama"}
+                                          type="text"
+                                          value={formikEdit.values.nama}
+                                          onChange={formikEdit.handleChange}
+                                          onBlur={formikEdit.handleBlur}
+                                          isError={
+                                            formikEdit.touched.nama &&
+                                            formikEdit.errors.nama
+                                          }
+                                          textError={formikEdit.errors.nama}
+                                        />{" "}
+                                        <Input
+                                          placeholder="Nama Belakang"
+                                          name={"username"}
+                                          type="text"
+                                          value={formikEdit.values.username}
+                                          onChange={formikEdit.handleChange}
+                                          onBlur={formikEdit.handleBlur}
+                                          isError={
+                                            formikEdit.touched.username &&
+                                            formikEdit.errors.username
+                                          }
+                                          textError={formikEdit.errors.username}
+                                        />{" "}
                                         <Select
                                           name="id_outlet"
                                           value={formikEdit.values.id_outlet}
@@ -404,14 +430,14 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
                                           })}
                                         </Select>
                                         <Select
-                                          name="jenis"
-                                          value={formikEdit.values.jenis}
+                                          name="role"
+                                          value={formikEdit.values.role}
                                           onChange={formikEdit.handleChange}
                                           isError={
-                                            formikEdit.errors.jenis &&
-                                            formikEdit.touched.jenis
+                                            formikEdit.errors.role &&
+                                            formikEdit.touched.role
                                           }
-                                          textError={formikEdit.errors.jenis}
+                                          textError={formikEdit.errors.role}
                                         >
                                           <option
                                             value=""
@@ -419,58 +445,10 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
                                           >
                                             Pilih Peran
                                           </option>
-                                          <option value="kiloan">Kiloan</option>
-                                          <option value="selimut">
-                                            Selimut
-                                          </option>
-                                          <option value="bed_cover">
-                                            Bed Cover
-                                          </option>
-                                          <option value="kaos">Kaos</option>
-                                          <option value="lainn">Lain</option>
+                                          <option value="admin">Admin</option>
+                                          <option value="kasir">Kasir</option>
+                                          <option value="owner">Owner</option>
                                         </Select>
-                                        <Input
-                                          placeholder="Nama Paket"
-                                          name="nama_paket"
-                                          value={formikEdit.values.nama_paket}
-                                          onChange={formikEdit.handleChange}
-                                          onBlur={formikEdit.handleBlur}
-                                          isError={
-                                            formikEdit.errors.nama_paket &&
-                                            formikEdit.touched.nama_paket
-                                          }
-                                          textError={
-                                            formikEdit.errors.nama_paket
-                                          }
-                                        />
-                                        <div>
-                                          {" "}
-                                          <CurrencyInput
-                                            className="my-1 w-full rounded-md border border-gray-300 px-4 py-3 text-sm font-medium placeholder:text-sm placeholder:font-medium placeholder:text-gray-500 focus:border focus:border-gray-400 focus:outline-none"
-                                            placeholder="Harga"
-                                            id="harga"
-                                            name="harga"
-                                            defaultValue={0}
-                                            decimalsLimit={2}
-                                            allowNegativeValue={false}
-                                            step={2}
-                                            value={formikEdit.values.harga}
-                                            prefix="Rp "
-                                            onValueChange={(value) => {
-                                              // setNominal(value)
-                                              formikEdit.setFieldValue(
-                                                "harga",
-                                                value
-                                              );
-                                            }}
-                                          />{" "}
-                                          {formikEdit.errors.harga &&
-                                            formikEdit.touched.harga && (
-                                              <p className="text-sm italic text-red-500">
-                                                {formikEdit.errors.harga}
-                                              </p>
-                                            )}
-                                        </div>
                                       </div>
                                       {/*footer*/}
                                       <div className="flex items-center justify-end rounded-b border-t border-solid border-slate-200 p-6">
@@ -484,29 +462,9 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
                                         <button
                                           className="mr-1 mb-1 rounded bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-emerald-600"
                                           type="submit"
-                                          onClick={async () => {
-                                            try {
-                                              setIsLoading(true);
-                                              const response =
-                                                await updatePaket(
-                                                  formikEdit.values.id,
-                                                  formikEdit.values
-                                                );
-                                              console.log(
-                                                "update =>",
-                                                response
-                                              );
-                                              getListPaketHandle();
-                                              toast.success(
-                                                response?.data?.msg
-                                              );
-                                              return setShowModal(false);
-                                            } catch (error) {
-                                              console.log(error);
-                                            } finally {
-                                              setIsLoading(false);
-                                            }
-                                          }}
+                                          onClick={() =>
+                                            formikEdit?.handleSubmit
+                                          }
                                         >
                                           Simpan Perubahan
                                         </button>
@@ -518,14 +476,15 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
                               <div className="fixed inset-0 z-40 bg-black opacity-5"></div>
                             </>
                           ) : null}
+
                           <ModalDelete
-                            onclick={async () => {
+                            onclick={async (e) => {
                               try {
-                                const response = await deletePaket(item?.id);
+                                e.preventDefault();
+                                const response = await deleteUser(item?.id);
                                 console.log("delete =>", response);
                                 console.log("delete ID =>", item.id);
-                                // toast.success(response.data.);
-                                getListPaketHandle();
+                                getListUserHandle();
                               } catch (error) {
                                 console.log(error);
                               }
@@ -535,7 +494,7 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
                             height={"40px"}
                             width={"95px"}
                             title={"Delete"}
-                            subTitle={"Paket"}
+                            subTitle={"Pengguna"}
                           >
                             <TrashIcon className="h-[22px] w-[22px] text-black" />
                           </ModalDelete>
@@ -547,7 +506,7 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
               )}
             </tbody>
           </table>
-        </div>{" "}
+        </div>
       </div>
       <div className="flex w-full items-center justify-end gap-5">
         {page === 1 ? (
@@ -574,4 +533,4 @@ justify-center rounded text-sm font-bold uppercase  text-black outline-none tran
   );
 };
 
-export default Paket;
+export default User;

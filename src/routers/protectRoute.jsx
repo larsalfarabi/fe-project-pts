@@ -44,7 +44,7 @@ const ProtectedRoute = ({ children }) => {
     );
   } else {
     console.log("auth", auth);
-    return auth !== undefined ? children : <Navigate to={"/login"} />;
+    return auth !== undefined ? children : <Navigate to={"/"} />;
   }
 };
 

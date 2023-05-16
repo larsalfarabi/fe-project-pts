@@ -18,7 +18,6 @@ import {
 const LoginSchema = Yup.object({
   email: Yup.string().nullable().required("Wajib").email("Wajin Email"),
   password: Yup.string().min(8, "Minimal wajib 8 angka").required("Wajib"),
-  level: Yup.string().required("Wajib Pilih"),
 });
 
 export default function Login() {
@@ -32,7 +31,7 @@ export default function Login() {
   const initialValues = {
     email: "",
     password: "",
-    level: "",
+
   };
 
   const formik = useFormik({
@@ -110,30 +109,6 @@ export default function Login() {
 
                     <FormErrorMessage fontWeight="bold">
                       {errors?.password}
-                    </FormErrorMessage>
-                  </FormControl>
-                  <FormControl isInvalid={errors?.level}>
-                    <FormLabel
-                      color="#38A169"
-                      htmlFor="level"
-                      fontWeight="semibold"
-                    >
-                      Masuk Sebagai
-                    </FormLabel>
-                    <InputGroup>
-                      <Select
-                        name="level"
-                        onChange={handleChange}
-                        value={values.level}
-                        placeholder="Pilih"
-                      >
-                        <option value="1">Administrator</option>
-                        <option value="2">Petugas</option>
-                      </Select>
-                    </InputGroup>
-
-                    <FormErrorMessage fontWeight="bold">
-                      {errors?.level}
                     </FormErrorMessage>
                   </FormControl>
                   <Button type="submit" width={"100%"} colorScheme="green">

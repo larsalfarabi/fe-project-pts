@@ -1,6 +1,7 @@
 import React from "react";
 import AuthLayout from "../module/LayoutAuth";
 import { Form, Formik } from "formik";
+import { useRouter } from "next/router";
 import * as Yup from "yup";
 import {
   FormControl,
@@ -13,25 +14,37 @@ import {
   Button,
   Select,
 } from "@chakra-ui/react";
+import { login } from "@/api/auth";
+import Cookies from "js-cookie";
 
 const LoginSchema = Yup.object({
-  username: Yup.string().nullable().required("Wajib"),
+  nama: Yup.string().nullable().required("Wajib"),
   password: Yup.string().min(8, "Minimal wajib 8 angka").required("Wajib"),
-  level: Yup.string().required("Wajib Pilih"),
 });
 
 export default function Login() {
   const [show, setShow] = React.useState(false);
+  const router = useRouter();
   const handleClick = () => setShow(!show);
 
-  const onSubmit = () => {
-    console.log("submit");
+  const onSubmit = async (values) => {
+    console.log("submit =>", values);
+    try {
+      const response = await login(values);
+      console.log(response);
+      let token = response.data.token;
+      Cookies.set("chat_token", token);
+      Cookies.set("authMyApp", true);
+      Cookies.set("auth", true);
+      router.push("/chat");
+    } catch (error) {
+      console.log("err =>", error);
+    }
   };
 
   const initialValues = {
-    username: "",
+    nama: "",
     password: "",
-    level: "",
   };
 
   return (
@@ -57,25 +70,39 @@ export default function Login() {
             <div className="w-full  px-5 h-screen flex items-center justify-center">
               {console.log("err", errors)}
               <Container>
-                <h2 className="text-3xl font-bold mb-10 text-[#38A169] ">Login Form</h2>
+                <h2 className="text-3xl font-bold mb-10 text-[#38A169] ">
+                  Login Form
+                </h2>
                 <Form onSubmit={handleSubmit}>
                   <section className="space-y-5">
-                    <FormControl isInvalid={errors?.username}>
-                      <FormLabel  color='#38A169' htmlFor="username" fontWeight="semibold">Username</FormLabel>
+                    <FormControl isInvalid={errors?.nama}>
+                      <FormLabel
+                        color="#38A169"
+                        htmlFor="nama"
+                        fontWeight="semibold"
+                      >
+                        Username
+                      </FormLabel>
                       <Input
-                        id="username"
+                        id="nama"
                         type="text"
-                        value={values.username}
+                        value={values.nama}
                         onChange={handleChange}
-                        placeholder="Ketik Username"
+                        placeholder="Ketik Nama"
                       />
 
                       <FormErrorMessage fontWeight="bold">
-                        {errors?.username}
+                        {errors?.nama}
                       </FormErrorMessage>
                     </FormControl>
                     <FormControl isInvalid={errors?.password}>
-                      <FormLabel color='#38A169' htmlFor="password" fontWeight="semibold">Password</FormLabel>
+                      <FormLabel
+                        color="#38A169"
+                        htmlFor="password"
+                        fontWeight="semibold"
+                      >
+                        Password
+                      </FormLabel>
                       <InputGroup>
                         <Input
                           id="password"
@@ -95,24 +122,7 @@ export default function Login() {
                         {errors?.password}
                       </FormErrorMessage>
                     </FormControl>
-                    <FormControl isInvalid={errors?.level}>
-                      <FormLabel color='#38A169' htmlFor="level" fontWeight="semibold">Masuk Sebagai</FormLabel>
-                      <InputGroup>
-                        <Select
-                          name="level"
-                          onChange={handleChange}
-                          value={values.level}
-                          placeholder="Pilih"
-                        >
-                          <option value="1">Administrator</option>
-                          <option value="2">Petugas</option>
-                        </Select>
-                      </InputGroup>
 
-                      <FormErrorMessage fontWeight="bold">
-                        {errors?.level}
-                      </FormErrorMessage>
-                    </FormControl>
                     <Button type="submit" width={"100%"} colorScheme="green">
                       Login
                     </Button>

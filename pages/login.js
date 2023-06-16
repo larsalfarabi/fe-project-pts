@@ -13,6 +13,7 @@ import {
   InputRightElement,
   Button,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import { login } from "@/api/auth";
 import Cookies from "js-cookie";
@@ -26,6 +27,7 @@ export default function Login() {
   const [show, setShow] = React.useState(false);
   const router = useRouter();
   const handleClick = () => setShow(!show);
+  const toast = useToast();
 
   const onSubmit = async (values) => {
     console.log("submit =>", values);
@@ -37,8 +39,27 @@ export default function Login() {
       Cookies.set("authMyApp", true);
       Cookies.set("auth", true);
       router.push("/chat");
+      return toast({
+        title: "Success",
+        description: response?.data?.msg,
+        status: "success",
+        variant: "subtle",
+        colorScheme: "whatsapp",
+        position: "bottom-right",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       console.log("err =>", error);
+      toast({
+        title: "Error",
+        description: error?.response?.data?.msg,
+        status: "error",
+        duration: 5000,
+        variant: "subtle",
+        position: "bottom-right",
+        isClosable: true,
+      });
     }
   };
 
@@ -67,10 +88,10 @@ export default function Login() {
             setFieldTouched,
             setFieldValue,
           }) => (
-            <div className="w-full  px-5 h-screen flex items-center justify-center">
+            <div className="flex  h-screen w-full items-center justify-center px-5">
               {console.log("err", errors)}
               <Container>
-                <h2 className="text-3xl font-bold mb-10 text-[#38A169] ">
+                <h2 className="mb-10 text-3xl font-bold text-[#38A169] ">
                   Login Form
                 </h2>
                 <Form onSubmit={handleSubmit}>

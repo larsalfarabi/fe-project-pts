@@ -1,5 +1,5 @@
 import axios from "axios";
-import qs from "qs";
+import { parse, stringify } from "qs";
 import Cookies from "js-cookie";
 
 const headers = {
@@ -10,9 +10,10 @@ let client = axios.create({
   baseURL: "http://localhost:8080",
 
   // headers: { "Content-Type": "application/json" },
-  // paramsSerializer: function (params) {
-  //   return qs.stringify(params, { encode: false, skipNulls: true });
-  // },
+  paramsSerializer: {
+    encode: parse,
+    serialize: stringify,
+  },
   headers,
 });
 client.interceptors.response.use(

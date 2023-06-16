@@ -3,7 +3,66 @@
 @import "tailwindcss/utilities";
 
 .background-image {
-  background-image: url("../image/Wa.jpeg");
-  background-repeat: repeat;
-  /* background-size: cover; */
+  background-image: url("../image/download.png");
+  /* background-repeat: no-repeat; */
+  filter: opacity(0.5);
+}
+.shadow {
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Track */
+::-webkit-scrollbar {
+  width: 4px;
+  /* background-color: ; */
+}
+
+/* Thumb */
+::-webkit-scrollbar-thumb {
+  background-color: rgba(217, 217, 227, 0.2);
+  border-radius: 3px;
+}
+
+/* Thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555555;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+}
+
+.bar {
+  display: inline-block;
+  width: 3px;
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+  animation: scale-up4 1s linear infinite;
+}
+
+.bar:nth-child(2) {
+  height: 35px;
+  margin: 0 5px;
+  animation-delay: 0.25s;
+}
+
+.bar:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+@keyframes scale-up4 {
+  20% {
+    background-color: #ffff;
+    transform: scaleY(1.5);
+  }
+
+  40% {
+    transform: scaleY(1);
+  }
+}
+
+.button {
+  background-color: transparent !important;
 }

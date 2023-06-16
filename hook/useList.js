@@ -7,9 +7,11 @@ export default function useList() {
     isFetching: isFetchingUser,
     isLoading: isLoadingUser,
   } = useQuery(["/list-user/chat"], () => listUser(), {
-    staleTime: 60 * 1000 * 10,
-    select: (response) => response.data,
+    staleTime: 60,
+    refetchInterval: 60 * 1000 * 10,
+    select: (response) => response?.data?.data,
   });
+
   return {
     dataUser,
     isFetchingUser,

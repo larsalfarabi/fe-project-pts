@@ -13,10 +13,7 @@ module.exports = {
 
   theme: {
     extend: {
-      fontFamily: {
-        pop: ["var(--font-poppins)"],
-        mono: ["var(--font-roboto-mono)"],
-      },
+
     },
   },
 };

@@ -1,7 +1,10 @@
 import React from "react";
 import dayjs from "dayjs";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 export default function OtherChats({ otherChats, dataAuth }) {
+  const router = useRouter();
+  const { chat } = router.query;
   return (
     <div>
       {" "}
@@ -14,7 +17,18 @@ export default function OtherChats({ otherChats, dataAuth }) {
       )}
       {otherChats?.map((message, index) => {
         return (
-          <div key={index}>
+          <div key={index} className="flex flex-col space-y-1">
+            {" "}
+            {chat === "group" && (
+              <p
+                className={clsx("ml-4 mt-0.5 text-[10px]", {
+                  hidden: message?.sender == dataAuth?.nama,
+                  "text-gray-500": message?.sender != dataAuth?.nama,
+                })}
+              >
+                {message?.sender}
+              </p>
+            )}
             <div
               className={clsx(`mb-1 w-full`, {
                 "flex justify-end pr-4": message?.sender == dataAuth?.nama,

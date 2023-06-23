@@ -1,73 +1,61 @@
 import React, { useEffect, useState } from "react";
 import useAuth from "@/hook/useAuth";
-import { motion } from "framer-motion";
-import useList from "@/hook/useList";
 import ChatLayout from "@/module/LayoutChat";
 import { useRouter } from "next/router";
-import { generateCode, getMessageList } from "@/api/chat";
+import { getMessageGroup, getMessageList } from "@/api/chat";
 import { socket } from "@/pages/_app";
 import ScrollToBottom from "react-scroll-to-bottom";
 import dayjs from "dayjs";
-import { Profile } from "iconsax-react";
+import { Profile, Profile2User } from "iconsax-react";
 import YesterdayChats from "@/components/yesterdayChats";
 import TodayChats from "@/components/todayChats";
 import OtherChats from "@/components/otherChats";
+import useListGroup from "@/hook/useListGroup";
+import FormatItemList from "@/components/formatItemList";
 
 export default function Index() {
   const router = useRouter();
-  const { nama } = router.query;
+  const { nama, roomCode, chat } = router.query;
   const { dataAuth } = useAuth();
-
+  const { dataGroup } = useListGroup();
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [code, setCode] = useState("");
 
-  console.log("data auth =>", dataAuth);
-
-  const getCode = async () => {
-    setMessageList([]);
-    const result = await generateCode(nama);
-    console.log("code =>", result);
-    let roomCode = result?.data?.code?.chatRoom;
-    setCode(roomCode);
-    const messageList = await getMessageList(roomCode);
-    console.log(messageList);
-    setMessageList(messageList?.data?.data);
-    await socket.emit("join_room", roomCode);
-  };
   useEffect(() => {
-    getCode();
-    console.log("jalan disini");
-  }, [nama]);
-
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!!message === false) return;
-
-    const messageData = {
-      room: code,
-      sender: dataAuth?.nama,
-      to: nama,
-      time: dayjs(),
-      message: message,
-    };
-    console.log("message_data =>", messageData);
-    await socket.emit("send_message", messageData);
-    setMessage("");
-    setMessageList((previousMessage) => [...previousMessage, messageData]);
-  };
-  const handleMessageList = async () => {
-    socket.on("received_message", (data) => {
-      if (data?.to === dataAuth?.nama) {
-        console.log("received_message =>", data);
-        setMessageList((previousMessage) => [...previousMessage, data]);
+    const handleGetMessage = async () => {
+      try {
+        setMessageList([]);
+        setCode(roomCode);
+        const messageList = await (chat === "chat"
+          ? getMessageList(roomCode)
+          : getMessageGroup(roomCode));
+        console.log("messageList", messageList);
+        setMessageList(messageList?.data?.data);
+        await socket.emit("join_room", roomCode);
+      } catch (error) {
+        console.log("error =>", error);
       }
-    });
-  };
+    };
+
+    handleGetMessage();
+    console.log("jalan disini");
+  }, [nama, roomCode, chat]);
+
   useEffect(() => {
-    handleMessageList();
-  }, [socket, dataAuth?.nama]);
-  console.log("socket =>", socket);
+    const handleMessage = (data) => {
+      setMessageList((previousMessage) => [...previousMessage, data]);
+      console.log("received_message =>", data);
+    };
+
+    const messageEvent =
+      chat === "chat" ? "received_message" : "received_message_group";
+    socket.on(messageEvent, handleMessage);
+
+    return () => {
+      socket.off(messageEvent, handleMessage);
+    };
+  }, [socket, dataAuth?.nama, chat]);
   function separateChatsByDay(chats) {
     const today = dayjs().startOf("day");
     const yesterday = today.subtract(1, "day").startOf("day");
@@ -92,22 +80,53 @@ export default function Index() {
 
   const separatedChats = separateChatsByDay(messageList);
 
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    if (!!message) return;
+
+    const messageData = {
+      room: code,
+      sender: dataAuth?.nama,
+      to: nama,
+      time: dayjs(),
+      message: message,
+    };
+    console.log("message_data =>", messageData);
+    const event = chat === "chat" ? "send_message" : "send_message_group";
+    await socket.emit(event, messageData);
+
+    setMessage("");
+    setMessageList((previousMessage) => [...previousMessage, messageData]);
+  };
+
   return (
     <ChatLayout>
       <div className="flex h-full flex-col justify-between">
         <div className="flex h-[65px] items-center gap-3 border-b border-b-[#2e2e2e] pl-5">
           {" "}
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#212529] p-[9px]">
-            <Profile color="#3E454D" variant="Bold" />
+            {chat === "group" ? (
+              <Profile2User color="#3E454D" variant="Bold" />
+            ) : (
+              <Profile color="#3E454D" variant="Bold" />
+            )}
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col space-y-1">
             <p
               className={`text-[13px] font-medium capitalize leading-[18px] text-gray-200`}
             >
               {nama}
             </p>
-
-            {!!message && (
+            <div className="flex space-x-1">
+              {chat === "group" && (
+                <FormatItemList
+                  dataGroup={dataGroup}
+                  dataAuth={dataAuth}
+                  roomCode={roomCode}
+                />
+              )}
+            </div>
+            {/* {!!message && (
               <div className="flex">
                 <motion.p
                   initial={{ x: -5, opacity: 0 }}
@@ -129,12 +148,11 @@ export default function Index() {
                   </div>
                 </motion.p>{" "}
               </div>
-            )}
+            )} */}
           </div>
         </div>
         <ScrollToBottom
           initialScrollBehavior="smooth"
-          followButtonClassName="button"
           mode="bottom"
           className="flex h-[479px] w-full scroll-m-1 flex-col overflow-auto scroll-smooth bg-[#0A0E0F] py-4"
         >
@@ -154,7 +172,6 @@ export default function Index() {
             todayChats={separatedChats.todayChats}
             dataAuth={dataAuth}
           />
-          
         </ScrollToBottom>
 
         <div className="flex border-t border-t-[#2e2e2e] bg-[#171B1D] p-3">

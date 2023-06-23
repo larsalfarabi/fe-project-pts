@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { listUser } from "@/api/chat";
 
-export default function useList() {
+export default function useListUser() {
   const {
     data: dataUser,
     isFetching: isFetchingUser,

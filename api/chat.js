@@ -14,3 +14,19 @@ export async function getMessageList(code) {
     room_code: code,
   });
 }
+
+export async function listGroup() {
+  return client.get("/group/list");
+}
+export async function createGroup(nama, member) {
+  return client.post("/group/create", {
+    nama,
+    member,
+  });
+}
+export async function getMessageGroup(code) {
+  syncToken();
+  return client.post("/group/messageList", {
+    room_code: code,
+  });
+}

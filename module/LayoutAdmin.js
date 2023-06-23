@@ -1,6 +1,6 @@
 import Link from "next/link";
 import useAuth from "@/hook/useAuth";
-import useList from "@/hook/useList";
+import useList from "@/hook/useListUser";
 export default function AdminLayout({ children }) {
   const { isFetchingAuth } = useAuth();
   const { dataUser } = useList();
